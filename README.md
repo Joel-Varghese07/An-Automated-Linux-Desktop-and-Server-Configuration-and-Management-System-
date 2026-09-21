@@ -2,7 +2,7 @@
 
 Project: An Automated Linux Desktop and Server Configuration and Management System for College Labs and Offices
 
-Owner: Vyshnavi Varma
+
 
 ## Roles
 - `software`: package installation, removal and optional upgrades.
