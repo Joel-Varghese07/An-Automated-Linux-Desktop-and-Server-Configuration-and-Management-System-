@@ -1,0 +1,12 @@
+---
+hardening_ssh_port: 22
+hardening_ssh_allowed_cidr: 192.168.10.0/24
+hardening_ssh_root_login: "no"
+hardening_ssh_password_authentication: "no"
+
+hardening_shadow_mode: "0640"
+
+hardening_ufw_enabled: true
+hardening_ufw_default_incoming: deny
+hardening_ufw_default_outgoing: allow
+hardening_ufw_ssh_rate_limit: false

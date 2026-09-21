@@ -1,0 +1,13 @@
+---
+- name: Apply CNLA configuration
+  hosts: all
+  become: true
+  roles:
+    - role: software
+      tags: software
+    - role: users
+      tags: users
+    - role: network
+      tags: network
+    - role: hardening
+      tags: hardening

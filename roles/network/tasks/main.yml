@@ -1,0 +1,65 @@
+---
+- name: Ensure nftables is installed
+  ansible.builtin.apt:
+    name: nftables
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  when: network_ai_block_enabled | bool
+  tags:
+    - network
+
+- name: Ensure nftables service is enabled
+  ansible.builtin.service:
+    name: nftables
+    enabled: true
+    state: started
+  when: network_ai_block_enabled | bool
+  tags:
+    - network
+
+- name: Collect UIDs for student accounts
+  ansible.builtin.getent:
+    database: passwd
+  tags:
+    - network
+
+- name: Build student UID list
+  ansible.builtin.set_fact:
+    network_student_uids: >-
+      {{
+        network_student_usernames
+        | map('extract', getent_passwd)
+        | map('first')
+        | list
+      }}
+  when:
+    - network_ai_block_enabled | bool
+    - network_student_usernames | length > 0
+  tags:
+    - network
+
+- name: Remove previous CNLA nftables table when blocking is disabled
+  ansible.builtin.command:
+    cmd: nft delete table inet {{ network_nft_table }}
+  register: network_remove_table
+  changed_when: network_remove_table.rc == 0
+  failed_when: false
+  when: not (network_ai_block_enabled | bool)
+  tags:
+    - network
+
+- name: Install CNLA per-user AI access policy
+  ansible.builtin.template:
+    src: cnla.nft.j2
+    dest: /etc/nftables.d/cnla.nft
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload nftables
+  when:
+    - network_ai_block_enabled | bool
+    - network_ai_block_ipv4 | length > 0 or network_ai_block_ipv6 | length > 0
+    - network_student_uids | length > 0
+  tags:
+    - network

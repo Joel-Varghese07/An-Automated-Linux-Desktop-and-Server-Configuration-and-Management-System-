@@ -1,0 +1,32 @@
+---
+# Proposed package list. Change only after the group agrees on the final list.
+software_packages:
+  - curl
+  - git
+  - htop
+  - tree
+  - vim
+  - net-tools
+
+# Account hashes must be replaced with approved pre-hashed values.
+# Keep plaintext passwords outside the repository.
+users_admin:
+  name: admin
+  password_hash: ""
+
+users_student:
+  name: student
+  password_hash: ""
+
+users_staff:
+  name: staff
+  password_hash: ""
+
+users_class_accounts: []
+
+# Network policy is disabled until an approved AI destination list exists.
+network_ai_block_enabled: false
+network_student_usernames:
+  - student
+network_ai_block_ipv4: []
+network_ai_block_ipv6: []

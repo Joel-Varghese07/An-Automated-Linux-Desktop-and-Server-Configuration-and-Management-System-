@@ -1,0 +1,26 @@
+table inet cnla {
+    set student_uids {
+        type uid
+        elements = { {{ network_student_uids | join(', ') }} }
+    }
+
+    set ai_ipv4 {
+        type ipv4_addr
+        flags interval
+        elements = { {{ network_ai_block_ipv4 | join(', ') }} }
+    }
+
+    chain output {
+        type filter hook output priority {{ network_nft_priority }}; policy accept;
+
+        meta skuid @student_uids ip daddr @ai_ipv4 reject
+{% if network_ai_block_ipv6 | length > 0 %}
+        set ai_ipv6 {
+            type ipv6_addr
+            flags interval
+            elements = { {{ network_ai_block_ipv6 | join(', ') }} }
+        }
+        meta skuid @student_uids ip6 daddr @ai_ipv6 reject
+{% endif %}
+    }
+}

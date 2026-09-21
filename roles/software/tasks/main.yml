@@ -1,0 +1,26 @@
+---
+- name: Install required software packages
+  ansible.builtin.apt:
+    name: "{{ software_packages }}"
+    state: present
+    update_cache: "{{ software_update_cache }}"
+    cache_valid_time: 3600
+  tags:
+    - software
+
+- name: Remove unwanted software packages
+  ansible.builtin.apt:
+    name: "{{ software_remove_packages }}"
+    state: absent
+    purge: true
+  when: software_remove_packages | length > 0
+  tags:
+    - software
+
+- name: Upgrade installed packages
+  ansible.builtin.apt:
+    name: "*"
+    state: latest
+  when: software_upgrade_packages | bool
+  tags:
+    - software

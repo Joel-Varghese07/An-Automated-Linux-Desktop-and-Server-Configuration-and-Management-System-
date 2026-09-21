@@ -1,0 +1,69 @@
+---
+- name: "[HARD-SSH-01] Disable SSH root login"
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^[#\s]*PermitRootLogin\s+'
+    line: "PermitRootLogin {{ hardening_ssh_root_login }}"
+    validate: "/usr/sbin/sshd -t -f %s"
+  notify: Restart ssh
+  tags:
+    - hardening
+    - HARD-SSH-01
+
+- name: "[HARD-SSH-02] Disable SSH password authentication"
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^[#\s]*PasswordAuthentication\s+'
+    line: "PasswordAuthentication {{ hardening_ssh_password_authentication }}"
+    validate: "/usr/sbin/sshd -t -f %s"
+  notify: Restart ssh
+  tags:
+    - hardening
+    - HARD-SSH-02
+
+- name: "[HARD-FW-01] Allow SSH before enabling firewall"
+  community.general.ufw:
+    rule: allow
+    port: "{{ hardening_ssh_port }}"
+    proto: tcp
+    src: "{{ hardening_ssh_allowed_cidr }}"
+  when: hardening_ufw_enabled | bool
+  tags:
+    - hardening
+    - HARD-FW-01
+
+- name: "[HARD-FW-02] Set default incoming firewall policy"
+  community.general.ufw:
+    direction: incoming
+    policy: "{{ hardening_ufw_default_incoming }}"
+  when: hardening_ufw_enabled | bool
+  tags:
+    - hardening
+    - HARD-FW-02
+
+- name: "[HARD-FW-03] Set default outgoing firewall policy"
+  community.general.ufw:
+    direction: outgoing
+    policy: "{{ hardening_ufw_default_outgoing }}"
+  when: hardening_ufw_enabled | bool
+  tags:
+    - hardening
+    - HARD-FW-03
+
+- name: "[HARD-FW-04] Enable UFW"
+  community.general.ufw:
+    state: enabled
+  when: hardening_ufw_enabled | bool
+  tags:
+    - hardening
+    - HARD-FW-04
+
+- name: "[HARD-PERM-01] Set /etc/shadow permissions"
+  ansible.builtin.file:
+    path: /etc/shadow
+    owner: root
+    group: shadow
+    mode: "{{ hardening_shadow_mode }}"
+  tags:
+    - hardening
+    - HARD-PERM-01

@@ -1,0 +1,68 @@
+---
+- name: Create admin account
+  ansible.builtin.user:
+    name: "{{ users_admin.name }}"
+    shell: "{{ users_shell }}"
+    create_home: "{{ users_create_home }}"
+    password: "{{ users_admin.password_hash }}"
+    groups: "{{ users_admin_group }}"
+    append: true
+    state: present
+  when:
+    - users_admin.name | length > 0
+    - users_admin.password_hash | length > 0
+  no_log: true
+  tags:
+    - users
+
+- name: Create generic student account
+  ansible.builtin.user:
+    name: "{{ users_student.name }}"
+    shell: "{{ users_shell }}"
+    create_home: "{{ users_create_home }}"
+    password: "{{ users_student.password_hash }}"
+    groups: []
+    state: present
+  when:
+    - users_student.name | length > 0
+    - users_student.password_hash | length > 0
+  no_log: true
+  tags:
+    - users
+
+- name: Create staff account
+  ansible.builtin.user:
+    name: "{{ users_staff.name }}"
+    shell: "{{ users_shell }}"
+    create_home: "{{ users_create_home }}"
+    password: "{{ users_staff.password_hash }}"
+    groups: []
+    state: present
+  when:
+    - users_staff.name | length > 0
+    - users_staff.password_hash | length > 0
+  no_log: true
+  tags:
+    - users
+
+- name: Create named class accounts
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    shell: "{{ users_shell }}"
+    create_home: "{{ users_create_home }}"
+    password: "{{ item.password_hash }}"
+    groups: []
+    state: present
+  loop: "{{ users_class_accounts }}"
+  no_log: true
+  tags:
+    - users
+
+- name: Remove selected accounts
+  ansible.builtin.user:
+    name: "{{ item }}"
+    state: absent
+    remove: true
+  loop: "{{ users_remove_accounts }}"
+  tags:
+    - users

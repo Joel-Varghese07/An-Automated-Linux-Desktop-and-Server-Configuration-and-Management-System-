@@ -1,0 +1,12 @@
+---
+software_packages:
+  - curl
+  - git
+  - htop
+  - tree
+  - vim
+  - net-tools
+
+software_remove_packages: []
+software_update_cache: true
+software_upgrade_packages: false

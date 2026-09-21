@@ -1,0 +1,26 @@
+---
+users_admin:
+  name: admin
+  password_hash: ""
+
+users_student:
+  name: student
+  password_hash: ""
+
+users_staff:
+  name: staff
+  password_hash: ""
+
+users_class_accounts: []
+# Example:
+# users_class_accounts:
+#   - name: student01
+#     password_hash: "$6$..."
+#   - name: student02
+#     password_hash: "$6$..."
+
+users_remove_accounts: []
+
+users_shell: /bin/bash
+users_create_home: true
+users_admin_group: sudo

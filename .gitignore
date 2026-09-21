@@ -1,0 +1,17 @@
+# Secrets and local state
+*.key
+*.pem
+*.pub
+.env
+.env.*
+vault-password-file
+plaintext-passwords*
+secrets/
+logs/
+
+# Ansible generated/local files
+.retry
+*.retry
+__pycache__/
+.venv/
+*:Zone.Identifier

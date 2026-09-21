@@ -1,0 +1,17 @@
+---
+# This role does NOT modify ens33/ens34 addresses or routes.
+# It enforces per-user outbound blocking using nftables.
+
+network_student_usernames:
+  - student
+
+# Add the named class accounts here in group_vars/ or host_vars.
+network_ai_block_ipv4: []
+
+# Optional IPv6 destinations if the testbed requires IPv6 blocking.
+network_ai_block_ipv6: []
+
+network_nft_table: cnla
+network_nft_chain: output
+network_nft_priority: 0
+network_ai_block_enabled: false
